@@ -1,0 +1,24 @@
+{
+  "name": "general-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^17.0.23",
+    "inversify": "^6.0.1",
+    "minimist": "^1.2.6",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.5",
+    "telegram": "^2.5.52",
+    "yargs-parser": "^21.0.1"
+  },
+  "devDependencies": {
+    "@types/yargs-parser": "^21.0.0"
+  }
+}

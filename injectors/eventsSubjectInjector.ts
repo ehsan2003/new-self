@@ -1,0 +1,1 @@
+export const EVENTS_SUBJECT_INJECTOR = Symbol.for("EVENTS_SUBJECT");

@@ -1,0 +1,1 @@
+export const CONFIG_STORE_INJECTOR = Symbol("CONFIG_STORE");
