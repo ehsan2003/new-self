@@ -15,6 +15,7 @@ import { MESSAGE_CHAT_POINTER, REPLY_MESSAGE_POINTER } from "./command-parser";
 import { getDisplayName } from "telegram/Utils";
 import { AllCommandHandler } from "./command-handlers/all";
 import { BotError } from "./errors/BotError";
+import { LogCommandHandler } from "./command-handlers/log";
 
 async function main() {
     const container = new Container();
@@ -60,7 +61,10 @@ async function main() {
     const manager = container.get(CommandManager);
 
     container.bind(AllCommandHandler).toSelf();
+    container.bind(LogCommandHandler).toSelf();
+
     manager.setHandler("all", container.get(AllCommandHandler));
+    manager.setHandler("log", container.get(LogCommandHandler));
 
     client.addEventHandler((m) => {
         manager.handleMessage(m).catch(async (e) => {
