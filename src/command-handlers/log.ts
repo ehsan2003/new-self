@@ -8,6 +8,7 @@ import { CommandHandler } from "../command-parser/CommandHandler";
 import { CommandDefinition } from "../command-parser/CommandTypes";
 import { CLIENT_INJECTOR } from "../injectors/clientInjector";
 import { CONFIG_STORE_INJECTOR } from "../injectors/configurationStoreInjector";
+import { prepareLongMessage } from "../utils/prepareLongMessage";
 type LogArgs = {
     here: boolean;
     chat: BigInteger;
@@ -30,10 +31,10 @@ export class LogCommandHandler implements CommandHandler<LogArgs> {
             })
         )[0];
 
-        await this.client.sendMessage(destChat, {
-            message: `<pre>${JSON.stringify(message, null, 2)}</pre>`,
-            parseMode: "html",
-        });
+        await this.client.sendMessage(
+            destChat,
+            prepareLongMessage(JSON.stringify(message, null, 4))
+        );
     }
     getDefinition(): CommandDefinition {
         return {
