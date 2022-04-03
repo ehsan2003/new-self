@@ -31,7 +31,8 @@ export class LogCommandHandler implements CommandHandler<LogArgs> {
         )[0];
 
         await this.client.sendMessage(destChat, {
-            message: JSON.stringify(message, null, 2),
+            message: `<pre>${JSON.stringify(message, null, 2)}</pre>`,
+            parseMode: "html",
         });
     }
     getDefinition(): CommandDefinition {
