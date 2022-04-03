@@ -16,6 +16,7 @@ import { getDisplayName } from "telegram/Utils";
 import { AllCommandHandler } from "./command-handlers/all";
 import { BotError } from "./errors/BotError";
 import { LogCommandHandler } from "./command-handlers/log";
+import { AdaminCommandHandler } from "./command-handlers/adamin";
 
 async function main() {
     const container = new Container();
@@ -62,7 +63,9 @@ async function main() {
 
     container.bind(AllCommandHandler).toSelf();
     container.bind(LogCommandHandler).toSelf();
+    container.bind(AdaminCommandHandler).toSelf();
 
+    manager.setHandler("adamin", container.get(AdaminCommandHandler));
     manager.setHandler("all", container.get(AllCommandHandler));
     manager.setHandler("log", container.get(LogCommandHandler));
 
