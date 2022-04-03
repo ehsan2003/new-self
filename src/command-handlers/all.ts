@@ -18,7 +18,7 @@ export type AllArguments = {
 @injectable()
 export class AllCommandHandler implements CommandHandler {
     constructor(@inject(CLIENT_INJECTOR) private client: TelegramClient) {}
-    async handle(_: NewMessageEvent, args: AllArguments): Promise<void> {
+    async handle( args: AllArguments): Promise<void> {
         const users = await this.client.getParticipants(args.chat, {});
         const chunks = getChunks(users, args.count);
 
@@ -40,6 +40,7 @@ export class AllCommandHandler implements CommandHandler {
     }
     getDefinition(): CommandDefinition {
         return {
+            description: "mentions all users in the group",
             args: {
                 message: {
                     type: "message",

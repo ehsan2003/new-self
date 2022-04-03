@@ -1,6 +1,6 @@
 import { BigInteger } from "big-integer";
 import { inject, injectable } from "inversify";
-import { Api, client, TelegramClient } from "telegram";
+import { Api, TelegramClient } from "telegram";
 import { NewMessageEvent } from "telegram/events";
 import { chunks, getDisplayName } from "telegram/Utils";
 import { MESSAGE_CHAT_POINTER, REPLY_MESSAGE_POINTER } from "../command-parser";
@@ -16,7 +16,7 @@ export type Args = {
 @injectable()
 export class AdaminCommandHandler implements CommandHandler<Args> {
     constructor(@inject(CLIENT_INJECTOR) private client: TelegramClient) {}
-    async handle(_: NewMessageEvent, args: Args): Promise<void> {
+    async handle(args: Args): Promise<void> {
         const users = await this.client.getParticipants(args.chat, {});
         const admins = users.filter(
             (u: any) =>
@@ -44,6 +44,7 @@ export class AdaminCommandHandler implements CommandHandler<Args> {
     }
     getDefinition(): CommandDefinition {
         return {
+            description: "mentions admins in a group",
             args: {
                 message: {
                     type: "message",

@@ -17,10 +17,16 @@ import { AllCommandHandler } from "./command-handlers/all";
 import { BotError } from "./errors/BotError";
 import { LogCommandHandler } from "./command-handlers/log";
 import { AdaminCommandHandler } from "./command-handlers/adamin";
+import { LevelStore } from "./LevelStore";
+import { Level } from "level";
 
 async function main() {
+    const db = new Level("db-files", { valueEncoding: "json" });
     const container = new Container();
-    const configStore = new JsonDb("./db-files/config.json");
+    const configStore = new LevelStore<any>(
+        db.sublevel("config", { valueEncoding: "json" })
+    );
+
     container
         .bind<Store<any>>(CONFIG_STORE_INJECTOR)
         .toConstantValue(configStore);
@@ -42,7 +48,11 @@ async function main() {
         apiId,
         apiHash,
         {
-            proxy,
+            proxy: {
+                socksType: 5,
+                ip: "127.0.0.1",
+                port: 1081,
+            },
         }
     );
     await client.connect();
@@ -88,6 +98,8 @@ async function main() {
                 ) {
                     await m.message.delete({ revoke: true });
                 }
+            } else {
+                throw e;
             }
         });
     }, new NewMessage({ outgoing: true }));

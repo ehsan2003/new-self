@@ -1,4 +1,4 @@
-import { BotError } from "../errors/BotError";
+import { BotError } from "./BotError";
 import didYouMean from "didyoumean";
 
 export class CommandNotFoundError extends BotError {

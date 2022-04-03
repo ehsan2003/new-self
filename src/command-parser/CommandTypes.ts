@@ -7,6 +7,7 @@ export type ArgumentDefinition = {
     default?: any;
 };
 export type CommandDefinition = {
+    positionalArgsHelp?: string;
     description?: string;
     args?: CommandArguments;
 };

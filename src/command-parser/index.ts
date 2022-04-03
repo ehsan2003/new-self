@@ -16,12 +16,12 @@ export class CommandArgumentParser {
     ) {}
 
     async parse<T>(message: NewMessageEvent): Promise<T> {
-        const text = message.message.text.trim().replace(/^![^ ]+ /, "");
+        const text = message.message.text.trim().replace(/^![^ ]+ ?/, "");
         const newLocal = this.yargsGenerator(this.args);
 
         const rawArgs = yargs(text, newLocal);
 
-        const result: any = {};
+        const result: any = { _: rawArgs._ };
 
         for (const [key, argumentDefinition] of Object.entries(this.args)) {
             let rawValue = rawArgs[key] || argumentDefinition.default;

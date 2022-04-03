@@ -20,7 +20,7 @@ export class LogCommandHandler implements CommandHandler<LogArgs> {
         @inject(CLIENT_INJECTOR) private client: TelegramClient,
         @inject(CONFIG_STORE_INJECTOR) private config: Store<any>
     ) {}
-    async handle(_: NewMessageEvent, args: LogArgs): Promise<void> {
+    async handle(args: LogArgs): Promise<void> {
         const destChat = args.here
             ? args.chat
             : await this.config.get("debugChatId");
@@ -38,6 +38,7 @@ export class LogCommandHandler implements CommandHandler<LogArgs> {
     }
     getDefinition(): CommandDefinition {
         return {
+            description: "logs a message",
             args: {
                 here: {
                     type: "boolean",
