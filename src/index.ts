@@ -23,9 +23,7 @@ import { Level } from "level";
 async function main() {
     const db = new Level("db-files", { valueEncoding: "json" });
     const container = new Container();
-    const configStore = new LevelStore<any>(
-        db.sublevel("config", { valueEncoding: "json" })
-    );
+    const configStore = new JsonDb("./db-files/config.json");
 
     container
         .bind<Store<any>>(CONFIG_STORE_INJECTOR)
