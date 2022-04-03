@@ -17,6 +17,13 @@ export class CommandManager {
     ) {
         this.map.set("help", new HelpCommandHandler(client, config, this.map));
     }
+    public async runCommandWithArgs(name: string, args: any) {
+        const handler = this.map.get(name);
+        if (!handler) {
+            throw new CommandNotFoundError(name, this.getCommandNames());
+        }
+        await handler.handle(args);
+    }
     public async handleMessage(event: NewMessageEvent) {
         const commandName = this.extractCommandName(event);
 
@@ -47,7 +54,7 @@ export class CommandManager {
             argsDef || {}
         );
         const args = await parser.parse(event);
-        console.log(`running command ${commandName} with args ${args}`);
+        console.log(`running command ${commandName} with args `, args);
         await handler.handle(args);
     }
 
