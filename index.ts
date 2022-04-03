@@ -10,7 +10,11 @@ import { JsonDb } from "./JsonDb";
 import { EVENTS_SUBJECT_INJECTOR } from "./injectors/eventsSubjectInjector";
 import { StringSession } from "telegram/sessions";
 import { NewMessage, NewMessageEvent } from "telegram/events";
-import { CommandManager } from "./command-parser";
+import { CommandManager } from "./command-parser/CommandManager";
+import { MESSAGE_CHAT_POINTER, REPLY_MESSAGE_POINTER } from "./command-parser";
+import { getDisplayName } from "telegram/Utils";
+import { AllCommandHandler } from "./command-handlers/all";
+import { BotError } from "./errors/BotError";
 
 async function main() {
     const container = new Container();
@@ -54,33 +58,31 @@ async function main() {
     container.bind<TelegramClient>(CLIENT_INJECTOR).toConstantValue(client);
 
     const manager = container.get(CommandManager);
-    manager.setHandler("log", {
-        getDefinition: () => ({
-            args: {
-                h: {
-                    type: "string",
-                    isArray: true,
-                    required: true,
-                },
-                b: {
-                    type: "message",
-                    isArray: true,
-                },
-                message: {
-                    type: "chat_or_user",
-                    alias: "m",
-                    isArray: true,
-                },
-            },
-        }),
-        handle: async (e, args) => {
-            console.log(args);
-        },
-    });
-    client.addEventHandler((m) => {
-        console.log("event wow");
 
-        manager.handleMessage(m);
+    container.bind(AllCommandHandler).toSelf();
+    manager.setHandler("all", container.get(AllCommandHandler));
+
+    client.addEventHandler((m) => {
+        manager.handleMessage(m).catch(async (e) => {
+            if (e instanceof BotError) {
+                console.error(e.message);
+                const debugChatId =
+                    (await configStore.get<string>("debugChatId")) || "me";
+
+                const forwarded = (await m.message.forwardTo(debugChatId))![0]!;
+                await client.sendMessage(debugChatId, {
+                    replyTo: forwarded.id,
+                    message: e.message,
+                });
+
+                if (
+                    (await configStore.get<boolean>("removeCommandOnError")) ??
+                    true
+                ) {
+                    await m.message.delete({ revoke: true });
+                }
+            }
+        });
     }, new NewMessage({ outgoing: true }));
 }
 main();
